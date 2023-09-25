@@ -8,7 +8,7 @@
 
 import psycopg2
 
-your_password = 'maxim12345'
+your_password = 
 
 
 
