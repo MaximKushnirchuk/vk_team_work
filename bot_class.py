@@ -32,8 +32,9 @@ class Bot:
 
     def listen(self):
         for event in self.longpoll.listen():
-            if event.type == VkEventType.USER_TYPING:
+            if  event.type == VkEventType.USER_TYPING or event.type == VkEventType.USER_TYPING_IN_CHAT:
                 self.vk_id = event.user_id
+                print(event.raw)
                 self.__about_user_vk()
                 self.__determine_age()
                 if self.age < 18:
