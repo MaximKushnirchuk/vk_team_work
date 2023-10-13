@@ -11,8 +11,9 @@ search_favorites - данная функция возвращает список
 
 import psycopg2
 from pprint import pprint
+from create_db import your_password_
 
-your_password: str = '...'
+your_password: str = your_password_
 
 
 def add_favorites_sql(id_user: str, user_name: str, user_surname: str, id_favorite: str, favorite_name: str, favorite_surname: str, photo_list: list)-> None :
@@ -61,6 +62,7 @@ def add_favorites_sql(id_user: str, user_name: str, user_surname: str, id_favori
 
         conn.commit()    
     conn.close()
+    return True
 
 
 def search_favorites(id_user: str)-> None :

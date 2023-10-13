@@ -3,19 +3,20 @@ from pprint import pprint
 import re
 import datetime
 import random
-
+# import threading
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from sql_fuctions import add_favorites_sql
+from sql_fuctions import search_favorites
 
 
 class Bot:
     def __init__(self):
         # вставить токен сообщества
-        token_group = 'vk1.a.prD5LF1FSiTOrG9P9265qr5vm3IP0eeLPXlWmjXVxRvvefVarea5CakA1J-Jp6gKtlXlLoEuj5RhxBgmtqMnPdUm-BiwyZQFRU_Sx3Say9iVNcRw-vBd0ZTfAMDaMsImGK_WFl3bIY9mIbF29N12ab6WXK0DvGmII6VBywwpIhg9oYZSWUk44MAuxglktbREu5FZaCfEQVf1lrZzjjLN_w'  
+        token_group = 'vk1.a.prD5LF1FSiTOrG9P9265qr5vm3IP0eeLPXlWmjXVxRvvefVarea5CakA1J-Jp6gKtlXlLoEuj5RhxBgmtqMnPdUm-BiwyZQFRU_Sx3Say9iVNcRw-vBd0ZTfAMDaMsImGK_WFl3bIY9mIbF29N12ab6WXK0DvGmII6VBywwpIhg9oYZSWUk44MAuxglktbREu5FZaCfEQVf1lrZzjjLN_w' 
         # вставить токен пользователя
-        token_user = 'vk1.a.0cMQCyYtTDNB3mVGCWkt-aTBmh-qO1XRPXfPz2owx8as0T5qZHVYLX7hazp4pto5GbYhUby2A1L_LS6qiy9uBIsmxn0pffCkoVHFL9vPbSY02iSB-bUxAZ0uHjeaRaf1h3zsnXpj86DKV2wrK1HEHgd2stJabIWNOT4tQT7hvV3rDXAgC5O_obzcthm34l0HYH5qqt3fwAOpYYipPyDhVA'  
+        token_user = '' 
         self.vk = vk_api.VkApi(token=token_group)
         self.vku = vk_api.VkApi(token=token_user)
         self.longpoll = VkLongPoll(self.vk)
@@ -30,18 +31,21 @@ class Bot:
         self.min_age = ''
         self.max_age = ''
 
-
+    def initialization(self):
+        user = Bot()
+        user.listen()
+        del user
 
     def listen(self):
         for event in self.longpoll.listen():
+            # print(event.user_id)
             if  event.type == VkEventType.USER_TYPING or event.type == VkEventType.USER_TYPING_IN_CHAT:
                 self.vk_id = event.user_id
-                print(event.raw)
                 self.__about_user_vk()
                 self.__determine_age()
                 if self.age < 18:
                     self.__send_mess('Извините, Ваш возраст не походит для использования приложения, будем рады видеть Вас позже :)', False, False)
-                    self.listen()
+                    return
                 keyboard = VkKeyboard(inline=True)
                 keyboard.add_button(label='ДА', color=VkKeyboardColor.POSITIVE, payload={'Value': 1})
                 keyboard.add_button(label='НЕТ', color=VkKeyboardColor.NEGATIVE, payload={'Value': 2})
@@ -56,20 +60,23 @@ class Bot:
             self.__send_mess('До свидания, будем рады видеть Вас снова', False, False)
             return
         elif flag == 3:
-            self.__send_mess('Избранное', False, False)
             self.__favorites()
             return
 
     def __keyboard_message(self, keyboard):
         for event in self.longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW and event.to_me: 
-                flag = False
-                try:
-                    flag = json.loads(event.raw[6]['payload'])['Value']
-                    break
-                except:
-                    self.__send_mess('Что-то пошло не так, попробуйте снова :)', False, keyboard)
-                    pass
+                # print(event.peer_id)
+                if self.vk_id == event.peer_id:
+                    flag = False
+                    try:
+                        flag = json.loads(event.raw[6]['payload'])['Value']
+                        break
+                    except:
+                        self.__send_mess('Что-то пошло не так, попробуйте снова :)', False, keyboard)
+                else:
+                    # thr1 = threading.Thread(target = Bot().initialization()).start()
+                    Bot().initialization()
         return flag
 
     def __set_ages(self):
@@ -239,6 +246,36 @@ class Bot:
                 self.__send_mess('До свидания, будем рады видеть Вас снова', False, False)
                 return
 
+    def __show_users_favorites(self, user_list):
+        index = 0
+        self.__send_mess('Избранное', False, False)
+        while True:
+            attach = ''
+            keyboard = VkKeyboard(inline=True)
+            if len(user_list) == 0:
+                keyboard.add_button(label='ВЫХОД', color=VkKeyboardColor.NEGATIVE, payload={'Value': 2})
+                self.__send_mess('Ваш список избранного пуст', False, keyboard)
+                return
+            if index != 0:
+                keyboard.add_button(label='НАЗАД', color=VkKeyboardColor.PRIMARY, payload={'Value': 0})
+            if index < len(user_list) - 1:    
+                keyboard.add_button(label='ВПЕРЕД', color=VkKeyboardColor.PRIMARY, payload={'Value': 1})
+            keyboard.add_button(label='ВЫХОД', color=VkKeyboardColor.NEGATIVE, payload={'Value': 2})
+            user = f'{user_list[index]["first_name"]} {user_list[index]["last_name"]}\nhttps://vk.com/id{user_list[index]["id_favorite"]}'
+
+            for photo in user_list[index]["photo"]:
+                attach += f'photo{user_list[index]["id_favorite"]}_{photo},'
+            attach = attach.rstrip(',')
+            self.__send_mess(user, attach, keyboard)
+            flag = self.__keyboard_message(keyboard)
+            if flag == 0:
+                index -= 1
+            elif flag == 1:
+                index += 1
+            elif flag == 2:
+                self.__send_mess('До свидания, будем рады видеть Вас снова', False, False)
+                return
+
     def __find_photos(self, photos):
         likes = []
         url_photos = []
@@ -255,9 +292,8 @@ class Bot:
                      })               
         return url_photos
     
- 
     def __add_favorites(self, user, photos):
-        add_favorites_sql(
+        if add_favorites_sql(
             id_user= self.vk_id,
             user_name= self.first_name,
             user_surname= self.last_name,
@@ -265,10 +301,13 @@ class Bot:
             favorite_name= user['first_name'],
             favorite_surname= user['last_name'],
             photo_list= photos
-        )
+        ):
+            self.__send_mess('Пользователь добавлен в избранное', False, False)
 
-    def __favorites():
-        pass
+
+    def __favorites(self):
+        res = search_favorites(str(self.vk_id))
+        self.__show_users_favorites(res)
 
 
         
