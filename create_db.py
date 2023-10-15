@@ -8,8 +8,10 @@
 - вызвать функцию create_tables() '''
 
 import psycopg2
+from tokens import postgress_password
 
-your_password: str = ''
+your_password: str = postgress_password
+
 
 def create_tables()-> None :
     '''функция создает четыре таблицы. Перед этим удаляет ранее созданные'''
