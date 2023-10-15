@@ -9,11 +9,11 @@
 
 import psycopg2
 
-your_password_: str = ''
+your_password: str = ''
 
 def create_tables()-> None :
     '''функция создает четыре таблицы. Перед этим удаляет ранее созданные'''
-    conn = psycopg2.connect(host='localhost', database='vk_tinder', user='postgres', password= your_password_)
+    conn = psycopg2.connect(host='localhost', database='vk_tinder', user='postgres', password= your_password)
 
     with conn.cursor() as cur :
 

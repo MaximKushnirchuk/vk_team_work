@@ -11,16 +11,16 @@ search_favorites - данная функция возвращает список
 
 import psycopg2
 from pprint import pprint
-from create_db import your_password_
+from create_db import your_password
 
-your_password: str = your_password_
+your_password_: str = your_password
 
 
 def add_favorites_sql(id_user: str, user_name: str, user_surname: str, id_favorite: str, favorite_name: str, favorite_surname: str, photo_list: list)-> None :
     '''Функция добаляет пользователя в таблицу vk_user, вносит человека в таблицу people, заполняет таблицу photo, заполняет таблицу favorites'''
     print()
     print('Работает функция  add_favorites_sql')
-    conn = psycopg2.connect(host = 'localhost', database = 'vk_tinder', user = 'postgres', password = your_password)
+    conn = psycopg2.connect(host = 'localhost', database = 'vk_tinder', user = 'postgres', password = your_password_)
     with conn.cursor() as cur :
         # прорверяем и вносим пользователя в vk_user 
         try :
