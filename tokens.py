@@ -1,5 +1,5 @@
 # modul for tokens
 
-postgress_password = 'maxim12345'
+postgress_password = ''
 
-token_for_vk = 'vk1.a.0cMQCyYtTDNB3mVGCWkt-aTBmh-qO1XRPXfPz2owx8as0T5qZHVYLX7hazp4pto5GbYhUby2A1L_LS6qiy9uBIsmxn0pffCkoVHFL9vPbSY02iSB-bUxAZ0uHjeaRaf1h3zsnXpj86DKV2wrK1HEHgd2stJabIWNOT4tQT7hvV3rDXAgC5O_obzcthm34l0HYH5qqt3fwAOpYYipPyDhVA'
+token_for_vk = ''
