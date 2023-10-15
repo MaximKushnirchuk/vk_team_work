@@ -16,7 +16,7 @@ class Bot:
         # вставить токен сообщества
         token_group = 'vk1.a.prD5LF1FSiTOrG9P9265qr5vm3IP0eeLPXlWmjXVxRvvefVarea5CakA1J-Jp6gKtlXlLoEuj5RhxBgmtqMnPdUm-BiwyZQFRU_Sx3Say9iVNcRw-vBd0ZTfAMDaMsImGK_WFl3bIY9mIbF29N12ab6WXK0DvGmII6VBywwpIhg9oYZSWUk44MAuxglktbREu5FZaCfEQVf1lrZzjjLN_w' 
         # вставить токен пользователя
-        token_user = '' 
+        token_user = 'vk1.a.0cMQCyYtTDNB3mVGCWkt-aTBmh-qO1XRPXfPz2owx8as0T5qZHVYLX7hazp4pto5GbYhUby2A1L_LS6qiy9uBIsmxn0pffCkoVHFL9vPbSY02iSB-bUxAZ0uHjeaRaf1h3zsnXpj86DKV2wrK1HEHgd2stJabIWNOT4tQT7hvV3rDXAgC5O_obzcthm34l0HYH5qqt3fwAOpYYipPyDhVA' 
         self.vk = vk_api.VkApi(token=token_group)
         self.vku = vk_api.VkApi(token=token_user)
         self.longpoll = VkLongPoll(self.vk)
