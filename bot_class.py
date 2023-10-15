@@ -9,14 +9,14 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from sql_fuctions import add_favorites_sql
 from sql_fuctions import search_favorites
-
+from tokens import token_for_vk
 
 class Bot:
     def __init__(self):
         # вставить токен сообщества
         token_group = 'vk1.a.prD5LF1FSiTOrG9P9265qr5vm3IP0eeLPXlWmjXVxRvvefVarea5CakA1J-Jp6gKtlXlLoEuj5RhxBgmtqMnPdUm-BiwyZQFRU_Sx3Say9iVNcRw-vBd0ZTfAMDaMsImGK_WFl3bIY9mIbF29N12ab6WXK0DvGmII6VBywwpIhg9oYZSWUk44MAuxglktbREu5FZaCfEQVf1lrZzjjLN_w' 
         # вставить токен пользователя
-        token_user = '' 
+        token_user =  token_for_vk
         self.vk = vk_api.VkApi(token=token_group)
         self.vku = vk_api.VkApi(token=token_user)
         self.longpoll = VkLongPoll(self.vk)
